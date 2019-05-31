@@ -1,0 +1,38 @@
+---
+# Docker CE setup for Ubuntu according to documentation
+# https://docs.docker.com/install/linux/docker-ce/ubuntu/
+- name: "Setup custom APT repo requirements"
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    update_cache: yes
+
+- name: "Add Docker GPG key to APT"
+  apt_key:
+    url:  "https://download.docker.com/linux/ubuntu/gpg"
+    id:   "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
+    state: present
+
+- name: "Add Docker APT repository"
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+    state: present
+    filename: docker-official-repository
+
+- name: "Install Docker"
+  apt:
+    name:
+      - docker-ce=5:18.09.6~3-0~ubuntu-bionic
+      - docker-ce-cli=5:18.09.6~3-0~ubuntu-bionic
+      - containerd.io=1.2.5-1
+    update_cache: yes
+
+- name: "Install Docker python lib so Ansible can prefetch images"
+  apt:
+    name:
+      - python-docker=2.5.1-1
+      - python3-docker=2.5.1-1
