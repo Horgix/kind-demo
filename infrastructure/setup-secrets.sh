@@ -8,3 +8,6 @@
 # For Terraform (see infrastructure/terraform/README.md) :
 export SCALEWAY_ORGANIZATION=`pass xebia/scaleway/api-organization`
 export SCALEWAY_TOKEN=`pass xebia/scaleway/api-secret-key`
+
+# For Ansible dynamic inventory
+export SCW_TOKEN=`pass xebia/scaleway/api-secret-key`
