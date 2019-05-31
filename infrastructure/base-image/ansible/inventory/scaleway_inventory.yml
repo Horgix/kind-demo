@@ -1,0 +1,10 @@
+plugin: scaleway
+regions:
+  - par1
+tags:
+  - kind
+hostnames:
+  - hostname
+variables:
+  ansible_host: public_ip.address
+  state: state
