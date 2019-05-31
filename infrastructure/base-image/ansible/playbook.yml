@@ -1,0 +1,7 @@
+---
+- hosts: kind
+  become: true
+  roles:
+    - docker
+    - kubectl
+    - kind
