@@ -1,0 +1,14 @@
+---
+- name: "Download kind binary"
+  get_url:
+    url: "https://github.com/kubernetes-sigs/kind/releases/download/v0.3.0/kind-linux-amd64"
+    dest: "/usr/local/bin/kind"
+    mode: '0755'
+    checksum: "sha256:4d133e28c639595eaafce281cc2508a1bf9aa901259b23e749a97a3e712b6f36"
+
+- name: "Pre-fetch kind node image"
+  docker_image:
+    name: "kindest/node"
+    tag:  "v1.14.2"
+    state: present
+    source: pull
