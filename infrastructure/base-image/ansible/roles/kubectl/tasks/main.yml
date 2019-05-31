@@ -1,0 +1,30 @@
+---
+# kubectl setup for Ubuntu according to documentation
+# https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-using-native-package-management
+- name: "Setup custom APT repo requirements"
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    update_cache: yes
+
+- name: "Add Google GPG key to APT"
+  apt_key:
+    url:  "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+
+- name: "Add Kubernetes APT repository"
+  apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    filename: kubernetes-official-repository
+
+- name: "Install kubectl"
+  apt:
+    name:
+      - kubectl
+    update_cache: yes
+
