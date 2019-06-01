@@ -5,3 +5,5 @@
     - docker
     - kubectl
     - kind
+    - golang
+    - k8s-sources
