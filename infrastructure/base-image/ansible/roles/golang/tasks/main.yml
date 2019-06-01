@@ -1,0 +1,37 @@
+---
+- name: "Download Golang archive"
+  get_url:
+    url: https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
+    dest: "/usr/src/go1.12.5.linux-amd64.tar.gz"
+    mode: '0644'
+
+- name: "Unarchive Golang archive"
+  unarchive:
+    src: "/usr/src/go1.12.5.linux-amd64.tar.gz"
+    dest: "/usr/local"
+    remote_src: yes
+    creates: "{{ goroot }}/bin/go"
+
+- name: "Setup GOROOT in bashrc"
+  lineinfile:
+    path:   /root/.bashrc
+    regexp: '^export GOROOT='
+    line:   "export GOROOT={{ goroot }}"
+
+- name: "Create directory for GOPATH"
+  file:
+    path:   "{{ gopath }}"
+    state:  directory
+    mode:   '0755'
+
+- name: "Setup GOPATH in bashrc"
+  lineinfile:
+    path:   /root/.bashrc
+    regexp: '^export GOPATH='
+    line:   "export GOPATH={{ gopath }}"
+
+- name: "Add GOROOT and GOPATH to PATH"
+  lineinfile:
+    path:   /root/.bashrc
+    regexp: '^export PATH='
+    line:   "export PATH={{ gopath }}/bin:{{ goroot }}/bin:$PATH"
