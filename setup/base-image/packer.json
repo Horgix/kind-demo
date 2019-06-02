@@ -1,0 +1,47 @@
+{
+  "variables": {
+    "tag.Event":    "Paris Container Day 2019",
+    "tag.Project":  "Kind demo"
+
+  },
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./provision_tmp_instance.yml",
+      "groups": [
+        "packer_build"
+      ]
+    }
+  ],
+  "builders": [
+    {
+      "type": "scaleway",
+      "image": "f974feac-abae-4365-b988-8ec7d1cec10d",
+      "region": "par1",
+      "commercial_type": "DEV1-XL",
+      "ssh_username": "root"
+    },
+    {
+      "type": "amazon-ebs",
+      "region": "eu-west-3",
+      "ami_name": "ami-kind-demo-{{timestamp}}",
+      "source_ami": "ami-03bca18cb3dc173c9",
+      "instance_type": "t2.xlarge",
+      "ssh_username": "ubuntu",
+      "run_tags": {
+        "Name":         "Kind Demo temporary instance",
+        "Origin":       "Packer",
+        "Event":        "{{user `tag.Event`}}",
+        "Project":      "{{user `tag.Project`}}",
+        "Stage":        "Build",
+        "Provider":     "AWS"
+      },
+      "tags": {
+        "Name":         "Kind Demo AMI {{timestamp}} [by Packer]",
+        "Origin":       "Packer",
+        "Event":        "{{user `tag.Event`}}",
+        "Project":      "{{user `tag.Project`}}"
+      }
+    }
+  ]
+}
