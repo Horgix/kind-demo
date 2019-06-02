@@ -12,10 +12,10 @@ resource "scaleway_server" "test-instance" {
   ]
 }
 
-output "Instance IP" {
+output "Scaleway - Instance IP" {
   value = "${scaleway_server.test-instance.public_ip}"
 }
 
-output "SSH command" {
+output "Scaleway - SSH command" {
   value = "ssh root@${scaleway_server.test-instance.public_ip}"
 }
