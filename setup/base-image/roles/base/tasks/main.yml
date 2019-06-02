@@ -1,0 +1,15 @@
+---
+- name: "Install base packages"
+  apt:
+    name:
+      - "tzdata"
+    state: present
+    update_cache: yes
+
+- name: "Set timezone - needed by kubetest --build"
+  file:
+    src: /usr/share/zoneinfo/Europe/Paris
+    dest: /etc/localtime
+    owner: root
+    group: root
+    state: link
