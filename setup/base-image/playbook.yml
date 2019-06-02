@@ -2,6 +2,7 @@
 - hosts: kind
   become: true
   roles:
+    - base
     - docker
     - kubectl
     - kind
