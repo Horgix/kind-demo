@@ -1,6 +1,6 @@
 #! /bin/bash
 
-source functions.sh
+source ./lib/functions.sh
 
 cmd "How does kind work?" "kind --help"
 
@@ -12,6 +12,11 @@ cmd "What is running?" "docker ps"
 
 cmd "kind itself is statefless!" 'docker ps -f "label=io.k8s.sigs.kind.cluster"'
 
-cmd "Delete the kind-create K8s cluster" "kind delete cluster --name=bla"
+cmd "Get kubeconfig for our cluster" 'export KUBECONFIG="$(kind get kubeconfig-path)"'
+export KUBECONFIG=$(kind get kubeconfig-path)
+
+cmd "What is running inside the cluster?" "kubectl get pods --all-namespaces"
+
+cmd "Delete the kind-create K8s cluster" "kind delete cluster"
 
 comment "The END :)"
