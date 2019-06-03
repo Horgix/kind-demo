@@ -16,3 +16,4 @@
       #- "k8s.io/kubernetes/test"
       #- "k8s.io/kubernetes/cluster"
     - "k8s.io/kubernetes/hack"
+    - "k8s.io/sample-controller"
