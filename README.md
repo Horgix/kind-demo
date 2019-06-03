@@ -14,13 +14,17 @@ This demonstration repository contains everything for the demo themselves,
 including what's needed to spawn instances on AWS and Scaleway with **all the
 requirements** to run the demo smoothly.
 
-It is not done locally because:
+It is not done locally on my laptop because:
 
 - I want to be able to do the live demo even if my laptop burns during the
   week-end before the conference
-- I had some trouble with my local kind setup since I'm using btrfs as my
-  Docker storage driver and it's officially not supported by kind (and more
-  broadly by any Docker-in-Docker setup involving kubelet from what I found)
+- I had some troubles with my local kind setup since I'm using btrfs as my
+  Docker storage driver and it's a [known issue with
+  kind](https://kind.sigs.k8s.io/docs/user/known-issues/#docker-on-btrfs) (and
+  more broadly by any Docker-in-Docker setup involving kubelet from what I
+  found - See [moby/moby#9939](https://github.com/moby/moby/issues/9939) and
+  [kubernetes/kubernetes
+  #38337](https://github.com/kubernetes/kubernetes/issues/38337))
 - It's easier to start from scratch when exploring - just trash the VM and go
   on!
 
@@ -28,7 +32,7 @@ Keep in mind these are the **talk live demo** constraints. You probably
 **want** to somehow use kind locally for **some** end-to-end tests when
 developping on Kubernetes or related projects.
 
-# What in there?
+# What's in there?
 
 - Ansible + Packer - TODO
 - Terraform - TODO
@@ -91,15 +95,22 @@ make WHAT=test/e2e/e2e.test
 
 Well described in https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/conformance-tests.md#running-conformance-tests
 
-# Demo - kind basics
+# Demo #1 - kind basics
+
+**See the [`demo-01.sh` script](demo/demo-01.sh) for what's being run for
+real**
 
 - Create a cluster
 - List containers
-- Connect to cluster
+- Connect to the cluster
 - List pods
+- Play around
 - TODO add nodes?
 
 # Demo - Conformance tests demo
+
+**See the [`demo-02.sh` script](demo/demo-02.sh) for what's being run for
+real**
 
 Compile requirements:
 
@@ -110,10 +121,19 @@ purpose so it's quick to run:
 
     kubetest --test --provider=local --deployment=local --test_args="--ginkgo.focus=\[sig-cli\].Kubectl.client.\[k8s.io\].Kubectl.label"
 
+Same thing but without direct kind integration:
+
+    kubetest --test --provider=local --deployment=kind --test_args="--ginkgo.focus=\[sig-cli\].Kubectl.client.\[k8s.io\].Kubectl.label"
+
 # Demo - Controller deployment (and test?)
 
-TODO present the controller and what it's doing. Add it as subtree/submodule of
-this repository?
+**See the [`demo-03.sh` script](demo/demo-02.sh) for what's being run for
+real**
+
+We're deploying a
+[sample-controller](https://github.com/kubernetes/sample-controller) on our
+kind cluster (can also be found as a git submodule in the `demo/` directory of
+this repo) and testing it from the outside.
 
 Compile the `sample-controller`:
 
@@ -123,8 +143,11 @@ Run the `sample-controller` against or kind cluster:
 
     ./sample-controller -kubeconfig=$KUBECONFIG
 
-TODO: containerize this controller, `kind load` it into the cluster, then
-deploy it with the appropriate manifest
+**TODO**:
+
+- Containerize this controller
+- `kind load` it into the cluster
+- Deploy it with the appropriate manifest
 
     FROM alpine:3.8
     ADD sample-controller /sample-controller
@@ -140,16 +163,26 @@ Create a custom resource:
     cat ~/go/src/k8s.io/sample-controller/artifacts/examples/example-foo.yaml
     kubectl apply -f ~/go/src/k8s.io/sample-controller/artifacts/examples/example-foo.yaml
 
-Check that it created the deployment:
+check that it created the resource and that the controller did its job:
 
-   kubectl get deployments 
+    kubectl get foos
+    kubectl get deployments 
 
-TODO logs of the controller?
+**TODO**:
+
+- Make the controller log
+- Add an end-to-end test asserting the behavior we discovered manually
 
 # Demo - Kube-bench
 
-TODO
+I wish I had the time to demo
+[kube-bench](https://github.com/aquasecurity/kube-bench) against a kind cluster
+but the talk had a time slot of 20min only so... it will be for another time :)
+
+For the record, kube-bench is [already being integrated with
+kind](https://github.com/aquasecurity/kube-bench#testing-locally-with-kind) -
+take a look at it!
 
 # Demo - CI
 
-TODO
+WIP
