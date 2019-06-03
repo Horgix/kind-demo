@@ -1,13 +1,6 @@
 ---
-# The Packer Scaleway builder doesn't know how to tag the temporary instance
-# so we just filter out the AWS instances
 - hosts: packer_build
-  gather_facts: False
-  become: no
-  roles:
-    - bootstrap_python
-
-- hosts: packer_build
+  become: yes
   roles:
     - base
     - docker
