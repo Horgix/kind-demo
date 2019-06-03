@@ -6,7 +6,7 @@ Container Day 2019](https://paris-container-day.fr/) on 4th June 2019 by
 [@Horgix](https://github.com/horgix).
 
 Baring some (minor) adaptations, it should be usable to reproduce the demo
-yourself as long as you have some cloud provider at hand.
+yourself.
 
 ## Why no local?
 
