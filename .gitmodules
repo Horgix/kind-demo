@@ -1,0 +1,4 @@
+[submodule "demo/sample-controller"]
+	path = demo/sample-controller
+	url = git@github.com:kubernetes/sample-controller.git
+	shallow = true
