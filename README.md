@@ -32,7 +32,7 @@ Keep in mind these are the **talk live demo** constraints. You probably
 **want** to somehow use kind locally for **some** end-to-end tests when
 developping on Kubernetes or related projects.
 
-# What's in there?
+## What's in there?
 
 - Ansible + Packer - TODO
 - Terraform - TODO
@@ -46,7 +46,7 @@ developping on Kubernetes or related projects.
     └── terraform           # Terraform to spawn the instances
 ```
 
-# Base image - What you'll end-up with
+## Base image - What you'll end-up with
 
 All of these, ready to use, with tools in your `$PATH`, etc. :
 
@@ -61,7 +61,7 @@ All of these, ready to use, with tools in your `$PATH`, etc. :
     - `k8s.io/kubernetes/hack`
     - `k8s.io/sample-controller`
 
-# Running conformance tests
+## Running conformance tests
 
 You **have to** `export KUBECTL_PATH` or it will try to find its own compiled
 binary even if you have `kubectl` in your `PATH`.
@@ -70,32 +70,33 @@ After wandering around a lot about how to run the conformance tests against
 kind, here are some notes (draft status, to be refined?) :
 
 - `kubetest` is the main command
-- `kubetest --test` is what interested us. Other testing lifecycle steps are
-  really well describe in TODO LINK
-- `kubetest --test --provider=skeleton` is often used as example but...
-- `kubetest --test --provider=local` is we want to use but... is not enough!
+- It needs ginkgo and e2e.test to be compiled already
+- `kubetest --test` is what we are interested in. Other testing lifecycle steps
+  are really well describe in [a file from the community
+  repo](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-testing/e2e-tests.md)
+- `kubetest --test --provider=skeleton` is often used as example but... is only
+  a mock
+- `kubetest --test --provider=local` is we want to use but... is not enough
 - You have to pair it with `--deployment` !
 - `kubetest --test --provider=local --deployment=kind` will try to find a kind
   cluster. By default it will look for a `kind-kubetest` cluster. By default,
   if you didn't give any cluster name to `kind create cluster`, it created one
   named simply `kind`
 - You can tell `kubetest` to use this existing cluster with `kubetest --test
-  --provider=local --deployment=kind --kind-cluster-name=kind(or whatever else
-  you named your kind cluster)`
+  --provider=local --deployment=kind --kind-cluster-name=kind-foobar(or
+  whatever else you named your kind cluster)`
 - OR you can totally forget about kind and hit it straight from you host just
   like any other Kubernetes cluster with `--deployment=local` and appropriate
-  env variables (I guess?)
+  env variables
 
-./hack/ginkgo-e2e.sh
-line 146
+## The Demo themselves
 
-... because it is looking for the ginkgo binary and for the e2e.test binary
+The demo scripts can be found in the [`demo/` directory][demo/] of this
+repository. They are what's being shown live on stage (mainly). Below you'll
+find a rough summary of what I'm trying to show with some notes and what I
+still want/need to add to this demo.
 
-make WHAT=test/e2e/e2e.test
-
-Well described in https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/conformance-tests.md#running-conformance-tests
-
-# Demo #1 - kind basics
+### Demo #1 - kind basics
 
 **See the [`demo-01.sh` script](demo/demo-01.sh) for what's being run for
 real**
@@ -107,7 +108,7 @@ real**
 - Play around
 - TODO add nodes?
 
-# Demo - Conformance tests demo
+### Demo #2 - Conformance tests demo
 
 **See the [`demo-02.sh` script](demo/demo-02.sh) for what's being run for
 real**
@@ -125,7 +126,7 @@ Same thing but without direct kind integration:
 
     kubetest --test --provider=local --deployment=kind --test_args="--ginkgo.focus=\[sig-cli\].Kubectl.client.\[k8s.io\].Kubectl.label"
 
-# Demo - Controller deployment (and test?)
+### Demo #3 - Controller deployment (and test?)
 
 **See the [`demo-03.sh` script](demo/demo-02.sh) for what's being run for
 real**
@@ -173,7 +174,7 @@ check that it created the resource and that the controller did its job:
 - Make the controller log
 - Add an end-to-end test asserting the behavior we discovered manually
 
-# Demo - Kube-bench
+### Demo #4 - Kube-bench
 
 I wish I had the time to demo
 [kube-bench](https://github.com/aquasecurity/kube-bench) against a kind cluster
@@ -183,6 +184,6 @@ For the record, kube-bench is [already being integrated with
 kind](https://github.com/aquasecurity/kube-bench#testing-locally-with-kind) -
 take a look at it!
 
-# Demo - CI
+### Demo #5 - CI
 
 WIP
