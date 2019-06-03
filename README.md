@@ -10,7 +10,9 @@ yourself as long as you have some cloud provider at hand.
 
 ## Why no local?
 
-This demonstration repository
+This demonstration repository contains everything for the demo themselves,
+including what's needed to spawn instances on AWS and Scaleway with **all the
+requirements** to run the demo smoothly.
 
 It is not done locally because:
 
@@ -28,8 +30,8 @@ developping on Kubernetes or related projects.
 
 # What in there?
 
-- Terraform
-- Ansible + Packer 
+- Ansible + Packer - TODO
+- Terraform - TODO
 
 ```
 .
@@ -40,7 +42,7 @@ developping on Kubernetes or related projects.
     └── terraform           # Terraform to spawn the instances
 ```
 
-# What you'll end-up with
+# Base image - What you'll end-up with
 
 All of these, ready to use, with tools in your `$PATH`, etc. :
 
@@ -51,16 +53,17 @@ All of these, ready to use, with tools in your `$PATH`, etc. :
     - `GOROOT` and `GOPATH` correctly set in bash
     - Binaries from `GOROOT` and `GOPATH` in your `PATH`
 - Some Kubernetes Go sources required to run the conformance tests
-    - TODO
-
+    - `k8s.io/test-infra/kubetest`
+    - `k8s.io/kubernetes/hack`
+    - `k8s.io/sample-controller`
 
 # Running conformance tests
 
+You **have to** `export KUBECTL_PATH` or it will try to find its own compiled
+binary even if you have `kubectl` in your `PATH`.
 
-Warning you have to export KUBECTL_PATH or it will try to find its own
-compiled binary even if you have `kubectl` in your `PATH`
-After wandering around a lot...
-
+After wandering around a lot about how to run the conformance tests against
+kind, here are some notes (draft status, to be refined?) :
 
 - `kubetest` is the main command
 - `kubetest --test` is what interested us. Other testing lifecycle steps are
@@ -88,6 +91,65 @@ make WHAT=test/e2e/e2e.test
 
 Well described in https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/conformance-tests.md#running-conformance-tests
 
-make WHAT="test/e2e/e2e.test vendor/github.com/onsi/ginkgo/ginkgo cmd/kubectl"
+# Demo - kind basics
 
-kubetest --test --provider=local --deployment=local --test_args="--ginkgo.focus=\[sig-cli\].Kubectl.client.\[k8s.io\].Kubectl.label"
+- Create a cluster
+- List containers
+- Connect to cluster
+- List pods
+- TODO add nodes?
+
+# Demo - Conformance tests demo
+
+Compile requirements:
+
+    make WHAT="test/e2e/e2e.test vendor/github.com/onsi/ginkgo/ginkgo cmd/kubectl"
+
+**Run kubetest** with on **only one conformance test** (K8s labels) for demo
+purpose so it's quick to run:
+
+    kubetest --test --provider=local --deployment=local --test_args="--ginkgo.focus=\[sig-cli\].Kubectl.client.\[k8s.io\].Kubectl.label"
+
+# Demo - Controller deployment (and test?)
+
+TODO present the controller and what it's doing. Add it as subtree/submodule of
+this repository?
+
+Compile the `sample-controller`:
+
+    CGO_ENABLED=0 GOOS=linux go build -o sample-controller ~/go/src/k8s.io/sample-controller/
+
+Run the `sample-controller` against or kind cluster:
+
+    ./sample-controller -kubeconfig=$KUBECONFIG
+
+TODO: containerize this controller, `kind load` it into the cluster, then
+deploy it with the appropriate manifest
+
+    FROM alpine:3.8
+    ADD sample-controller /sample-controller
+    ENTRYPOINT ["/sample-controller"]
+
+Create the CRD:
+
+    cat ~/go/src/k8s.io/sample-controller/artifacts/examples/crd.yaml
+    kubectl apply -f ~/go/src/k8s.io/sample-controller/artifacts/examples/crd.yaml
+
+Create a custom resource:
+
+    cat ~/go/src/k8s.io/sample-controller/artifacts/examples/example-foo.yaml
+    kubectl apply -f ~/go/src/k8s.io/sample-controller/artifacts/examples/example-foo.yaml
+
+Check that it created the deployment:
+
+   kubectl get deployments 
+
+TODO logs of the controller?
+
+# Demo - Kube-bench
+
+TODO
+
+# Demo - CI
+
+TODO
