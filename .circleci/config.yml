@@ -16,3 +16,6 @@ jobs:
       - run: "chmod +x ./kind"
       - run: "./kind create cluster"
       - run: "./kind get clusters"
+      - run: "ls -lah demo"
+      - run: "ls demo/sample-controller"
+      - run: "CGO_ENABLED=0 GOOS=linux go build -o sample-controller ./demo/sample-controller/"
