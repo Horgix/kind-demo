@@ -29,4 +29,6 @@ jobs:
           command: |
             ls -lah demo
             ls demo/sample-controller
-            CGO_ENABLED=0 GOOS=linux go build -o sample-controller ./demo/sample-controller/
+            #CGO_ENABLED=0 GOOS=linux go build -o sample-controller ./demo/sample-controller/
+            go get k8s.io/sample-controller
+            CGO_ENABLED=0 GOOS=linux go build -o sample-controller /go/src/k8s.io/sample-controller
